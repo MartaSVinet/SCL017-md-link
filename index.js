@@ -1,32 +1,37 @@
 const fs = require('fs');
 const path = require('path');
 const userPath = process.argv[2];
-//const linksToValidate = [];
-/*const { urlToHttpOptions } = require('http');*/
-/*const { match } = require('assert');*/
+
 
 const readIfMd = (fileToRead) => {
   const extension = path.extname(fileToRead);
   if (extension === '.md') { //compara si el archivo es md
     fs.readFile(fileToRead, 'utf8', (err, data) => { //Lee el contenido del archivo si es md
       if (err) throw err;
-      const getLinks = /(?<!\!)\[([^\]]+)]\((https?:\/\/[^\s)]+)\)/g; //expresión regular que encuentra los links
-      const matchLinks = data.matchAll(getLinks);// constante que compara la data con los link
-      const allLinks = []; //constante donde guardo los links
-      for (const match of matchLinks) { //bucle for que pushea los links en la constante
-        allLinks.push({
-          href: match[2], //el link entra en el índice 2
-          text: match[1],//el texto del link entra en el índice 1
-          file: userPath, // la ruta que nos da el usuario entra en el índice 0
-        });
-        console.log(userPath + ' ' + match[2] + ' ' + `${match[1].slice(0, 50)}`); //imprimimos en consola los índices con espacios entre cada uno
-      }
-          return allLinks;
-    })
-  } else {
-    console.log('el archivo no tiene la extensión necesaria');
-  };
+      const links = findLinks(data);
+      return links;
+    });
+  }else {
+    console.log('el archivo no tiene la extensión necesaria');    
+  }
 };
+
+const findLinks = (data) => {
+  const getLinks = /(?<!\!)\[([^\]]+)]\((https?:\/\/[^\s)]+)\)/g; //expresión regular que encuentra los links
+  const matchLinks = data.matchAll(getLinks);// constante que compara la data con los link
+  const allLinks = []; //constante donde guardo los links
+  for (const match of matchLinks) { //bucle for que pushea los links en la constante
+    allLinks.push({
+      href: match[2], //el link entra en el índice 2
+      text: match[1],//el texto del link entra en el índice 1
+      file: userPath, // la ruta que nos da el usuario entra en el índice 0
+    });
+    console.log(userPath + ' ' + match[2] + ' ' + `${match[1].slice(0, 50)}`); //imprimimos en consola los índices con espacios entre cada uno
+  }
+  return allLinks;
+};
+
+
 //constante que define qué sucede si la ruta que nos da el usuario es archivo o directorio. 
 const fileOrDir = (userPath) => {
   fs.lstat(userPath, (err, stats) => {
@@ -39,6 +44,7 @@ const fileOrDir = (userPath) => {
       } else if (stats.isFile()) {
         console.log('Es un archivo'); //si es un archivo lee el archivo
         const links = readIfMd(userPath);
+        console.log('links', links);
         return links;
         
       }
@@ -62,10 +68,14 @@ const readDir = () => {
 }
 
 const mdLinks = (userPath) => {
- let results = fileOrDir(userPath);
- console.log('results', results);
- };
+  let results = fileOrDir(userPath);
+  console.log('results', results);
+};
 mdLinks(userPath);
+
+
+
+
 /*mdLinks(userPath).then(links => {
   console.log(links);
 });
@@ -88,10 +98,3 @@ mdLinks(userPath);
     .then (function)
   }
 }*/
-
-
-
-
-
-
-
