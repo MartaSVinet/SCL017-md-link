@@ -73,28 +73,3 @@ const mdLinks = (userPath) => {
 };
 mdLinks(userPath);
 
-
-
-
-/*mdLinks(userPath).then(links => {
-  console.log(links);
-});
-
-/*if (options.validate) {
-  fetch.href(text[1]), function(error, meta, body) {
-    if (body === undefined) {
-
-    }else{
-
-      }
-
-    }
-  }
-}
-
-/*const validateLinks = (allLinks) => {
-  for (let link of allLinks) {
-    fetch(link.href)
-    .then (function)
-  }
-}*/
